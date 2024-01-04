@@ -35,7 +35,7 @@ fun App() {
             LaunchedEffect(birdViewModel) {
                 birdViewModel.updateImages()
             }
-        Text(uiState.images.toString())
+        BirdsPage(uiState)
     }
 }
 
@@ -61,6 +61,6 @@ fun BirdImageCell(image: BirdImage) {
         resource = asyncPainterResource("https://sebastianaigner.github.io/demo-image-api/${image.path}"),
         contentDescription = "${image.category} by ${image.author}",
         contentScale = ContentScale.Crop,
-        modifier = Modifier.fillMaxWidth().aspectRatio(1.0f),)
+        modifier = Modifier.fillMaxWidth().aspectRatio(1.0f),
     )
 }
