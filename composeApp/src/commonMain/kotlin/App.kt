@@ -35,19 +35,28 @@ fun App() {
             LaunchedEffect(birdViewModel) {
                 birdViewModel.updateImages()
             }
-        BirdsPage(uiState)
+        BirdsPage(uiState, onSelectCategory = { birdViewModel.selectCategory(it) })
     }
 }
 
 @Composable
-fun BirdsPage(uiState: BirdsUiState) {
+fun BirdsPage(uiState: BirdsUiState, onSelectCategory: (String) -> Unit) {
     Column {
-        Row {}
-        AnimatedVisibility(visible = uiState.images.isNotEmpty()) {
+        Row {
+            for (category in uiState.categories) {
+                Button(
+                    onClick = { onSelectCategory(category) },
+                    modifier = Modifier.aspectRatio(1.0f).weight(1.0f)
+                ) {
+                    Text(category)
+                }
+            }
+        }
+        AnimatedVisibility(visible = uiState.selectedImages.isNotEmpty()) {
             LazyVerticalGrid(
                 columns = GridCells.Adaptive(180.dp)
             ) {
-                items(uiState.images) { image ->
+                items(uiState.selectedImages) { image ->
                     BirdImageCell(image)
                 }
             }
