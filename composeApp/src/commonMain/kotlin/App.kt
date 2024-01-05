@@ -1,5 +1,4 @@
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -12,10 +11,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
@@ -24,7 +19,6 @@ import dev.icerock.moko.mvvm.compose.viewModelFactory
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
-import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
@@ -35,19 +29,28 @@ fun App() {
             LaunchedEffect(birdViewModel) {
                 birdViewModel.updateImages()
             }
-        BirdsPage(uiState)
+        BirdsPage(uiState, onSelectCategory = { birdViewModel.selectCategory(it) })
     }
 }
 
 @Composable
-fun BirdsPage(uiState: BirdsUiState) {
+fun BirdsPage(uiState: BirdsUiState, onSelectCategory: (String) -> Unit) {
     Column {
-        Row {}
-        AnimatedVisibility(visible = uiState.images.isNotEmpty()) {
+        Row {
+            for (category in uiState.categories) {
+                Button(
+                    onClick = { onSelectCategory(category) },
+                    modifier = Modifier.aspectRatio(1.0f).weight(1.0f)
+                ) {
+                    Text(category)
+                }
+            }
+        }
+        AnimatedVisibility(visible = uiState.selectedImages.isNotEmpty()) {
             LazyVerticalGrid(
                 columns = GridCells.Adaptive(180.dp)
             ) {
-                items(uiState.images) { image ->
+                items(uiState.selectedImages) { image ->
                     BirdImageCell(image)
                 }
             }
